@@ -7,12 +7,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import "./expenses-entry-form.css"
 const EntryForm = () => {
-	const currencies = [
-		{
-			value: 'EUR',
-			label: '€',
-		},
-	];
 	const expenseSpentAtStore = [{
 		value: "Spar"
 	},
@@ -110,17 +104,22 @@ const EntryForm = () => {
 	},
 	{
 		value: "Muthukumar Neelamegam"
-	}];
+	},
+	{
+		value: "Sharing"
+	}
+];
 	const handleDateChange = (date, dateType) =>{
-		setFormData({ ...formData, [dateType]: date.$d });
+		setFormData({ ...formData, [dateType]: date });
 	
 	  }
 	const [formData, setFormData] = useState({
-		fullName: '',
-		amount: 0,
-		date:dayjs(new Date()),
-		expenseSpentAtStore:"",
+		date:dayjs(),
+		place:"",
+		spendingtInfo:"",
 		expenseCategory:"",
+		amount: 0,
+		amountPaidBy: '',
 		moneyBorrowedFrom:"",
 		moneyLentTo:"",
 	  });
@@ -139,14 +138,17 @@ const EntryForm = () => {
         method: 'POST',
         body: formData,
         muteHttpExceptions: true,
+		contentType: "application/json",
+		mode:"no-cors"
       });
 
       setFormData({
-		fullName: '',
-		amount: 0,
-		date:"",
-		expenseSpentAtStore:"",
+		date:dayjs(),
+		place:"",
+		spendingtInfo:"",
 		expenseCategory:"",
+		amount: 0,
+		amountPaidBy: '',
 		moneyBorrowedFrom:"",
 		moneyLentTo:"",
       });
@@ -176,35 +178,41 @@ const EntryForm = () => {
                           handleDateChange(newValue,"date")}/>
 					</DemoContainer>
 				</LocalizationProvider>
-				<TextField select variant="standard" label="Expense Spent At Store" defaultValue="" helperText="Please select store where expense is spent" fullWidth onChange={handleChange} name="expenseSpentAtStore"value={formData.expenseSpentAtStore}>
+				<TextField variant="standard" label="Place" helperText="Please enter location" fullWidth onChange={handleChange}name="place"value={formData.place}></TextField>
+				<TextField select variant="standard" label="Expense Spent At Store" helperText="Please select store where expense is spent" fullWidth onChange={handleChange} 
+				name="spendingtInfo"value={formData.expenseSpentAtStore}>
 					{expenseSpentAtStore.map((category) => (
-						<MenuItem key={category.value} name="expenseSpentAtStore"value={category.value} onChange={handleChange}>
+						<MenuItem key={category.value} value={category.value} onChange={handleChange}>
 							{category.value}
 						</MenuItem>))}
 				</TextField>
-				<TextField select variant="standard" label="Expense Category" defaultValue="" helperText="Please select your expense category" fullWidth onChange={handleChange}name="expenseCategory"value={formData.expenseCategory}>
+				<TextField select variant="standard" label="Expense Category" helperText="Please select your expense category" fullWidth onChange={handleChange}
+				name="expenseCategory"value={formData.expenseCategory}>
 					{expenseCategory.map((category) => (
-						<MenuItem key={category.value} name="expenseCategory"value={category.value} onChange={handleChange}>
+						<MenuItem key={category.value} value={category.value} onChange={handleChange}>
 							{category.value}
 						</MenuItem>))}
 				</TextField>
-				<TextField select variant="standard" label="Paid By" helperText="Amount Paid By" name="fullName"fullWidth defaultValue="" onChange={handleChange}value={formData.fullName}>
+				<TextField select variant="standard" label="Paid By" helperText="Amount Paid By" fullWidth onChange={handleChange}
+				name="amountPaidBy" value={formData.fullName}>
 					{users.map((option) => (
-						<MenuItem key={option.value} name="fullName"value={option.value} defaultValue="" onChange={handleChange}>
+						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
 							{option.value}
 						</MenuItem>
 					))}
 				</TextField>
-				<TextField select variant="standard" label="Money Borrowed From" name="moneyBorrowedFrom"helperText="Money Borrowed From" fullWidth defaultValue="" onChange={handleChange}>
+				<TextField select variant="standard" label="Money Borrowed From" helperText="Money Borrowed From" fullWidth  onChange={handleChange}
+				name="moneyBorrowedFrom" value={formData.moneyBorrowedFrom} >
 					{users.map((option) => (
-						<MenuItem key={option.value} name="moneyBorrowedFrom"value={option.value} onChange={handleChange}>
+						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
 							{option.value}
 						</MenuItem>
 					))}  
 					</TextField>
-				<TextField select  variant="standard" name="moneyLentTo"label="Money Given To" helperText="Money Given To" fullWidth defaultValue="" onChange={handleChange}>
+				<TextField select  variant="standard" label="Money Given To" helperText="Money Given To" fullWidth  onChange={handleChange}
+				name="moneyLentTo" value={formData.moneyLentTo}>
 					{users.map((option) => (
-						<MenuItem key={option.value} name="moneyLentTo"value={option.value} onChange={handleChange}>
+						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
 							{option.value}
 						</MenuItem>
 					))}  
