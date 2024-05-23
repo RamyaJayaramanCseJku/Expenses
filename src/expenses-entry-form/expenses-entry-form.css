@@ -1,0 +1,11 @@
+.expenses-page-container{
+    margin:10px
+}
+.app-bar-container{
+    margin: 10px 10px auto;
+}
+.entry-form-container{
+   margin: 10px 10px auto;
+   font-size: 14px;
+   font-style: arial;
+}
