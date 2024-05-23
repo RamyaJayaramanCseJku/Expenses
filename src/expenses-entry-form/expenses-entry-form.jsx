@@ -131,12 +131,12 @@ const EntryForm = () => {
 	
 	  const handleSubmit = async(e) => {
 		e.preventDefault();
-		console.log('Form submitted:', formData);
-		const Sheet_Url="https://script.google.com/macros/s/AKfycbwIvtzPynWglaq8gzxM8bFWeK7ztFVF6ax3OenQhzyomW_3cbcyv5TXM7SFCPdayate/exec"
+		console.log('Form submitted:', JSON.stringify(formData),formData);
+		const Sheet_Url="https://script.google.com/macros/s/AKfycbweRgXLD3C2KzmXjS40g1510-3LJo-baYWo4d-b2i1v6MawKn8hfUSFbreBTIXhpv2TiQ/exec"
     try {
       await fetch(Sheet_Url, {
         method: 'POST',
-        body: formData,
+        body: JSON.stringify(formData),
         muteHttpExceptions: true,
 		contentType: "application/json",
 		mode:"no-cors"
