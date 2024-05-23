@@ -132,7 +132,7 @@ const EntryForm = () => {
 	  const handleSubmit = async(e) => {
 		e.preventDefault();
 		console.log('Form submitted:', formData);
-		const Sheet_Url="  https://script.google.com/macros/s/AKfycbxJ4XWfbno40hPQwnt1mCeqqLjONXgtL_eTnfFXwVA/dev"
+		const Sheet_Url="https://script.google.com/macros/s/AKfycbwIvtzPynWglaq8gzxM8bFWeK7ztFVF6ax3OenQhzyomW_3cbcyv5TXM7SFCPdayate/exec"
     try {
       await fetch(Sheet_Url, {
         method: 'POST',
