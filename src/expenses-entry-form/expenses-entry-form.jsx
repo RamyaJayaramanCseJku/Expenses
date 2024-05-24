@@ -163,7 +163,7 @@ const EntryForm = () => {
 	  const handleSubmit = async(e) => {
 		e.preventDefault();
 		const data=new FormData();
-		data.append("date",dayjs(formData.date).format("DD.MM.YYYY"));
+		data.append("date",formData.date.format("DD.MM.YYYY"));
 		data.append("place",formData.place);
 		data.append("spendingInfo",formData.spendingInfo);
 		data.append("expenseCategory",formData.expenseCategory);
@@ -188,7 +188,7 @@ const EntryForm = () => {
 		console.log('Success:');
 	  } 
       setFormData({
-		date:"",
+		date:dayjs(),
 		place:"",
 		spendingInfo:"",
 		expenseCategory:"",
