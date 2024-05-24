@@ -131,12 +131,22 @@ const EntryForm = () => {
 	
 	  const handleSubmit = async(e) => {
 		e.preventDefault();
-		console.log('Form submitted:', JSON.stringify(formData),formData);
+		const data=new FormData();
+		data.append("date",formData.date);
+		data.append("place",formData.place);
+		data.append("spendingtInfo",formData.spendingtInfo);
+		data.append("expenseCategory",formData.expenseCategory);
+		data.append("amount",formData.amount);
+		data.append("amountPaidBy",formData.amountPaidBy);
+		data.append("moneyBorrowedFrom",formData.moneyBorrowedFrom);
+		data.append("moneyLentTo",formData.moneyLentTo);
+	
+		console.log('Form submitted:',data);
 		const Sheet_Url="https://script.google.com/macros/s/AKfycbw0o_zkqJ4xEbc3lcRte6NkppSNzouOgLBnK66EMXKrF8sD260ZOB8nchx31brlQA4e/exec"
     try {
       const response=await fetch(Sheet_Url, {
         method: 'POST',
-        body: JSON.stringify(formData),
+        body: data,
         muteHttpExceptions: true,
 		contentType: "application/json",
 		mode:"no-cors"
