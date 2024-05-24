@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { TextField, MenuItem, Input, AppBar, Typography,FormControl  } from '@mui/material';
+import { TextField, MenuItem, Input, AppBar, Typography  } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -110,8 +110,14 @@ const EntryForm = () => {
 	}
 ];
 	const handleDateChange = (date, dateType) =>{
-		setFormData({ ...formData, [dateType]: date });
-	
+		console.log(date)
+		if(!date){
+			setDateError(true)
+		}
+		else{
+			setDateError(false)
+			setFormData({ ...formData, [dateType]: date });
+		}
 	  }
 	const [formData, setFormData] = useState({
 		date:dayjs(),
@@ -123,9 +129,34 @@ const EntryForm = () => {
 		moneyBorrowedFrom:"",
 		moneyLentTo:"",
 	  });
-	
+	  const [placeError, setPlaceError] = useState(false);
+	  const [spendingInfoError, setSpendingInfoError] = useState(false);
+	  const [expenseCategoryError, setExpenseCategoryError] = useState(false);
+	  const [amountError, setAmountError] = useState(false);
+	  const [amountPaidByError, setAmountPaidByError] = useState(false);
+	  const [dateError, setDateError] = useState(false);
 	  const handleChange = (e) => {
-		console.log(e.target.name)
+		console.log(e.target.name,e.target.value==="0"?true:false)
+		if(e.target.name==="place"&&!e.target.value){
+			setPlaceError(true)
+		}
+		else{setPlaceError(false)}
+		if(e.target.name==="expenseCategory"&&!e.target.value){
+			setExpenseCategoryError(true)
+		}
+		else{setExpenseCategoryError(false)}
+		if(e.target.name==="spendingInfo"&&!e.target.value){
+			setSpendingInfoError(true)
+		}
+		else{setSpendingInfoError(false)}
+		if(e.target.name==="amount"&&e.target.value==="0"){
+			setAmountError(true)
+		}
+		else{setAmountError(false)}
+		if(e.target.name==="amountPaidBy"&&!e.target.value){
+			setAmountPaidByError(true)
+		}
+		else{setAmountPaidByError(false)}
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	  };
 	
@@ -181,32 +212,47 @@ const EntryForm = () => {
 			</div>
 			<div className='entry-form-container'>
 				<form onSubmit={handleSubmit}>
-				<TextField disabled  label="Currency" defaultValue={"€"}fullWidth>  </TextField>
+				<TextField disabled  label="Currency" defaultValue={"€"} fullWidth>  </TextField>
 				<br/>
-				<Input variant="standard" label="Amount" name="amount"value={parseInt(formData.amount)} placeholder="Amount" type="number" fullWidth onChange={handleChange}></Input>
+				<TextField variant="standard" label="Amount" name="amount"value={parseInt(formData.amount)} 
+				placeholder="Amount" type="number"  onChange={handleChange}
+				required
+				fullWidth
+				InputProps={{
+					inputProps: { min: 1 }
+				  }}
+				error={amountError}
+      			helperText={amountError ? "Please enter amount greater than 0" : ""}
+				></TextField>
 
-				<LocalizationProvider dateAdapter={AdapterDayjs}>
-					<DemoContainer components={['DatePicker']}>
+				<LocalizationProvider dateAdapter={AdapterDayjs} required>
+					<DemoContainer components={['DatePicker']} required>
 						<DatePicker label="Date" name="date"value={formData.date} onChange={(newValue)=>
-                          handleDateChange(newValue,"date")}/>
+                          handleDateChange(newValue,"date")}  required
+						  error={dateError}
+      			helperText={dateError ? "Please enter a valid date" : ""}
+						  />
 					</DemoContainer>
 				</LocalizationProvider>
-				<TextField variant="standard" label="Place" helperText="Please enter location" fullWidth onChange={handleChange}name="place"value={formData.place}></TextField>
-				<TextField select variant="standard" label="Expense Spent At Store" helperText="Please select store where expense is spent" fullWidth onChange={handleChange} 
+				<TextField variant="standard" label="Place" required fullWidth
+				error={placeError} helperText={placeError?"Please enter location":""} 
+				 onChange={handleChange}name="place"value={formData.place}></TextField>
+				<TextField select variant="standard" label="Expense Spent At Store" required
+				error={spendingInfoError}helperText={spendingInfoError?"Please select store where expense is spent":""} fullWidth onChange={handleChange} 
 				name="spendingInfo"value={formData.spendingInfo}>
 					{expenseSpentAtStore.map((category) => (
 						<MenuItem key={category.value} value={category.value} onChange={handleChange}>
 							{category.value}
 						</MenuItem>))}
 				</TextField>
-				<TextField select variant="standard" label="Expense Category" helperText="Please select your expense category" fullWidth onChange={handleChange}
-				name="expenseCategory"value={formData.expenseCategory}>
+				<TextField select variant="standard" label="Expense Category" error={expenseCategoryError}helperText={expenseCategoryError?"Please select your expense category":""} fullWidth onChange={handleChange}
+				name="expenseCategory"value={formData.expenseCategory} required>
 					{expenseCategory.map((category) => (
 						<MenuItem key={category.value} value={category.value} onChange={handleChange}>
 							{category.value}
 						</MenuItem>))}
 				</TextField>
-				<TextField select variant="standard" label="Paid By" helperText="Amount Paid By" fullWidth onChange={handleChange}
+				<TextField select variant="standard" label="Paid By" required error={amountPaidByError}helperText={amountPaidByError?"Amount Paid By":""} fullWidth onChange={handleChange}
 				name="amountPaidBy" value={formData.fullName}>
 					{users.map((option) => (
 						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
