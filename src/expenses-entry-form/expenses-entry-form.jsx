@@ -116,7 +116,7 @@ const EntryForm = () => {
 	const [formData, setFormData] = useState({
 		date:dayjs(),
 		place:"",
-		spendingtInfo:"",
+		spendingInfo:"",
 		expenseCategory:"",
 		amount: 0,
 		amountPaidBy: '',
@@ -132,9 +132,9 @@ const EntryForm = () => {
 	  const handleSubmit = async(e) => {
 		e.preventDefault();
 		const data=new FormData();
-		data.append("date",formData.date);
+		data.append("date",new Date(formData.date).toLocaleString());
 		data.append("place",formData.place);
-		data.append("spendingtInfo",formData.spendingtInfo);
+		data.append("spendingtInfo",formData.spendingInfo);
 		data.append("expenseCategory",formData.expenseCategory);
 		data.append("amount",formData.amount);
 		data.append("amountPaidBy",formData.amountPaidBy);
@@ -158,7 +158,7 @@ const EntryForm = () => {
       setFormData({
 		date:dayjs(),
 		place:"",
-		spendingtInfo:"",
+		spendingInfo:"",
 		expenseCategory:"",
 		amount: 0,
 		amountPaidBy: '',
@@ -193,7 +193,7 @@ const EntryForm = () => {
 				</LocalizationProvider>
 				<TextField variant="standard" label="Place" helperText="Please enter location" fullWidth onChange={handleChange}name="place"value={formData.place}></TextField>
 				<TextField select variant="standard" label="Expense Spent At Store" helperText="Please select store where expense is spent" fullWidth onChange={handleChange} 
-				name="spendingtInfo"value={formData.expenseSpentAtStore}>
+				name="spendingInfo"value={formData.spendingInfo}>
 					{expenseSpentAtStore.map((category) => (
 						<MenuItem key={category.value} value={category.value} onChange={handleChange}>
 							{category.value}
