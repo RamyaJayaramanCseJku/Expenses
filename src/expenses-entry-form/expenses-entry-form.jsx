@@ -134,7 +134,7 @@ const EntryForm = () => {
 		const data=new FormData();
 		data.append("date",new Date(formData.date).toLocaleString());
 		data.append("place",formData.place);
-		data.append("spendingtInfo",formData.spendingInfo);
+		data.append("spendingInfo",formData.spendingInfo);
 		data.append("expenseCategory",formData.expenseCategory);
 		data.append("amount",formData.amount);
 		data.append("amountPaidBy",formData.amountPaidBy);
