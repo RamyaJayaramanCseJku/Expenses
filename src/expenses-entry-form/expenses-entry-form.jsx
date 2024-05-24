@@ -163,7 +163,7 @@ const EntryForm = () => {
 	  const handleSubmit = async(e) => {
 		e.preventDefault();
 		const data=new FormData();
-		data.append("date",new Date(formData.date).toLocaleString());
+		data.append("date",dayjs(formData.date).format("DD.MM.YYYY"));
 		data.append("place",formData.place);
 		data.append("spendingInfo",formData.spendingInfo);
 		data.append("expenseCategory",formData.expenseCategory);
@@ -172,8 +172,8 @@ const EntryForm = () => {
 		data.append("moneyBorrowedFrom",formData.moneyBorrowedFrom);
 		data.append("moneyLentTo",formData.moneyLentTo);
 	
-		console.log('Form submitted:',data);
-		const Sheet_Url="https://script.google.com/macros/s/AKfycbw0o_zkqJ4xEbc3lcRte6NkppSNzouOgLBnK66EMXKrF8sD260ZOB8nchx31brlQA4e/exec"
+		console.log('Form submitted:',formData);
+		const Sheet_Url="https://script.google.com/macros/s/AKfycbxFgWCFPz7eSOi-4Rrh5oafsb0dXK3zdNePVUQp0g8VIPmfhM7MPMgifGkkV1KqE8cW/exec"
     try {
       const response=await fetch(Sheet_Url, {
         method: 'POST',
@@ -183,11 +183,12 @@ const EntryForm = () => {
 		mode:"no-cors"
       });
 	  if (response !== ""){
-		let json = await response.json();
-		console.log('Success:', JSON.stringify(json));
+		console.log(response)
+		
+		console.log('Success:');
 	  } 
       setFormData({
-		date:dayjs(),
+		date:"",
 		place:"",
 		spendingInfo:"",
 		expenseCategory:"",
