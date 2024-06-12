@@ -1,3 +1,8 @@
+### Expenses Management
+Manage the daily expenses in the google excel sheet<br/>
+Use React App as the interface to make entries and visualize the data.<br/>
+The design of the appliaction is as follows:<br/>
+![Expenses_Management_App](./)
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
