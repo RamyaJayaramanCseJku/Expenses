@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { TextField,IconButton, Snackbar,MenuItem, Autocomplete, AppBar, Typography, Button  } from '@mui/material';
+import { TextField,IconButton, Snackbar,MenuItem, Autocomplete,TextArea, AppBar, Typography, Button  } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -152,20 +152,8 @@ const EntryForm = () => {
 				</AppBar>
 			</div>
 			<div className='entry-form-container'>
+			
 				<form onSubmit={handleSubmit}>
-				<TextField disabled  label="Currency" defaultValue={"€"} fullWidth>  </TextField>
-				<br/>
-				<TextField variant="standard" label="Amount" name="amount"value={parseInt(formData.amount??"")} 
-				placeholder="Amount" type="number"  onChange={handleChange}
-				required
-				fullWidth
-				InputProps={{
-					inputProps: { min: 1 }
-				  }}
-				error={amountError}
-      			helperText={amountError ? "Please enter amount greater than 0" : ""}
-				></TextField>
-
 				<LocalizationProvider dateAdapter={AdapterDayjs} required>
 					<DemoContainer components={['DatePicker']} required>
 						<DatePicker label="Date" name="date"value={formData.date} onChange={(newValue)=>
@@ -175,10 +163,7 @@ const EntryForm = () => {
 						  />
 					</DemoContainer>
 				</LocalizationProvider>
-				<TextField variant="standard" label="Place" required fullWidth
-				error={placeError} helperText={placeError?"Please enter location":""} 
-				 onChange={handleChange}name="place"value={formData.place??""}></TextField>
-				
+				<div className='expense-container'>
 				<Autocomplete
   					disablePortal
   					options={options}
@@ -188,9 +173,9 @@ const EntryForm = () => {
 					name="spendingInfo"
 					onInputChange={handleChange}
   					renderInput={(params) => 
-					<TextField {...params} name="spendingInfo" label="Expense Spent At Store"
+					<TextField {...params} className="spending-info"name="spendingInfo" label="Expense Spent At Store"
 					 variant="standard" required 
-					 fullWidth onChange={handleChange} 
+					 onChange={handleChange} 
 					 value={formData.spendingInfo??""}
 					 onKeyDown={(e) => {
 						if (
@@ -212,10 +197,10 @@ const EntryForm = () => {
 					name="expenseCategory"
 					onInputChange={handleChange}
   					renderInput={(params) => 
-				<TextField {...params}  variant="standard" label="Expense Category" 
+				<TextField {...params}  className="expense-category"variant="standard" label="Expense Category" 
 				error={expenseCategoryError}
 				helperText={expenseCategoryError?"Please select your expense category":""} 
-				fullWidth 
+				 
 				onChange={handleChange}
 				value={formData.expenseCategory??""}
 				name="expenseCategory"
@@ -231,8 +216,9 @@ const EntryForm = () => {
 				  }}
 				 />}
 					/>
+				</div>
 				
-				<TextField select variant="standard" label="Paid By" required error={amountPaidByError}helperText={amountPaidByError?"Amount Paid By":""} fullWidth onChange={handleChange}
+					<TextField select variant="standard" label="Paid By" required error={amountPaidByError}helperText={amountPaidByError?"Amount Paid By":""} fullWidth onChange={handleChange}
 				name="amountPaidBy" value={formData.amountPaidBy??""}>
 					{users.map((option) => (
 						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
@@ -240,22 +226,26 @@ const EntryForm = () => {
 						</MenuItem>
 					))}
 				</TextField>
-				<TextField select variant="standard" label="Money Borrowed From" helperText="Money Borrowed From" fullWidth  onChange={handleChange}
-				name="moneyBorrowedFrom" value={formData.moneyBorrowedFrom??""} >
-					{users.map((option) => (
-						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
-							{option.value}
-						</MenuItem>
-					))}  
-					</TextField>
-				<TextField select  variant="standard" label="Money Given To" helperText="Money Given To" fullWidth  onChange={handleChange}
-				name="moneyLentTo" value={formData.moneyLentTo??""}>
-					{users.map((option) => (
-						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
-							{option.value}
-						</MenuItem>
-					))}  
-					</TextField>
+				<TextField variant="standard" label="Amount in €" name="amount"value={parseInt(formData.amount??"")} 
+				placeholder="Amount" type="number"  onChange={handleChange}
+				required
+				fullWidth
+				InputProps={{
+					inputProps: { min: 1 }
+				  }}
+				error={amountError}
+      			helperText={amountError ? "Please enter amount greater than 0" : ""}
+				></TextField>
+
+				
+				<TextField variant="standard" label="Place" required fullWidth
+				error={placeError} helperText={placeError?"Please enter location":""} 
+				 onChange={handleChange}name="place"value={formData.place??""}></TextField>
+				
+				
+				<TextField variant="standard" fullWidth label="Comments" multiline
+          maxRows={4}/>
+				
 					<div className='submit-button-container'>
 					<Button className="submit-button"type="submit" variant="contained" endIcon={<SendIcon />}>Submit</Button>
 					

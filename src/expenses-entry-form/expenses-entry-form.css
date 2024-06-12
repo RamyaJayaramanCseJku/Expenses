@@ -10,7 +10,7 @@ div.app-bar-header{
 }
 .entry-form-container{
    margin: 15px 10px auto;
-   font-size: 14px;
+   font-size: 12px;
    font-style: arial;
 }
 .submit-button{
@@ -18,6 +18,20 @@ div.app-bar-header{
   
 }
 .submit-button-container{
+    margin-top: 1rem;
     display: flex;
     justify-content: flex-end;
+}
+div.expense-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.MuiAutocomplete-root{
+    max-width: 300px;
+    min-width: 250px;
+    
+}
+.css-clttge-MuiAutocomplete-root{
+    font-size: small;
 }
