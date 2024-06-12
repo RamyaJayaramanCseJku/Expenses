@@ -1,114 +1,55 @@
-import React,{useState} from 'react';
-import { TextField, MenuItem, Input, AppBar, Typography  } from '@mui/material';
+import React,{useState,useEffect} from 'react';
+import { TextField,IconButton, Snackbar,MenuItem, Autocomplete, AppBar, Typography, Button  } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import "./expenses-entry-form.css"
+import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
+import "./expenses-entry-form.css";
+import { expenseSpentAtStore,expenseCategory,users } from '../utils/customInput';
 const EntryForm = () => {
-	const expenseSpentAtStore = [{
-		value: "Spar"
-	},
-	{
-		value: "Billa"
-	},
-	{
-		value: "Action"
-	},
-	{
-		value: "Tedi"
-	},
-	{
-		value: "H&M"
-	},
-	{
-		value: "C&A"
-	},
-	{
-		value: "New Yorker"
-	},
-	{
-		value: "MTC"
-	},
-	{
-		value: "Josco"
+	const [open, setOpen] = React.useState(false);
+
+	const [options, setOptions] = React.useState(expenseSpentAtStore);
+	const [category, setCategory] = React.useState(expenseCategory);
+ // Retrieve options from localStorage or use initialOptions if not present
+ useEffect(() => {
+    const savedOptions = JSON.parse(localStorage.getItem('expenseSpentAtStore')) || expenseSpentAtStore;
+    setOptions(savedOptions);
+  }, []);
+
+  
+	const DisplayMessage=()=>{
+		return( <Snackbar
+			open={open}
+			autoHideDuration={6000}
+			onClose={handleClose}
+			message="Expense has been added successfully !!!"
+			action={action}
+		  />)
 	}
-	]
-	const expenseCategory = [
-		{
-			value: 'Groceries',
-
-		},
-		{
-			value: 'Food',
-
-		},
-		{
-			value: 'Travel',
-
-		},
-		{
-			value: 'Gift',
-
-		},
-		{
-			value: 'Toiletries',
-
-		},
-		{
-			value: 'Electrical and electronics',
-
-		},
-		{
-			value: 'Furnitures',
-
-		},
-		{
-			value: 'Plants',
-
-		},
-		{
-			value: 'Savings',
-
-		},
-		{
-			value: 'Subscriptions',
-
-		},
-		{
-			value: 'Rent',
-
-		},
-		{
-			value: 'Heating',
-
-		},
-		{
-			value: 'Electricity',
-
-		},
-		{
-			value: 'Internet',
-
-		},
-		{
-			value: 'Phone bill',
-		},
-		{
-			value: 'India transfer',
-		},
-	];
-	const users = [{
-		value: "Ramya Jayaraman"
-	},
-	{
-		value: "Muthukumar Neelamegam"
-	},
-	{
-		value: "Sharing"
-	}
-];
+	const handleClose = (event, reason) => {
+		console.log(event,reason)
+		if (reason === 'clickaway') {
+		  return;
+		}
+	
+		setOpen(false);
+	  };
+	  const action = (
+		<React.Fragment>
+		  <IconButton
+			size="small"
+			aria-label="close"
+			color="inherit"
+			onClick={handleClose}
+		  >
+			<CloseIcon fontSize="small" />
+		  </IconButton>
+		</React.Fragment>
+	  );
 	const handleDateChange = (date, dateType) =>{
 		console.log(date)
 		if(!date){
@@ -136,7 +77,9 @@ const EntryForm = () => {
 	  const [amountPaidByError, setAmountPaidByError] = useState(false);
 	  const [dateError, setDateError] = useState(false);
 	  const handleChange = (e) => {
-		console.log(e.target.name,e.target.value==="0"?true:false)
+		if(e){
+
+		
 		if(e.target.name==="place"&&!e.target.value){
 			setPlaceError(true)
 		}
@@ -158,12 +101,13 @@ const EntryForm = () => {
 		}
 		else{setAmountPaidByError(false)}
 		setFormData({ ...formData, [e.target.name]: e.target.value });
+	}
 	  };
 	
 	  const handleSubmit = async(e) => {
 		e.preventDefault();
 		const data=new FormData();
-		data.append("date",formData.date.format("DD.MM.YYYY"));
+		data.append("date",formData.date.format("YYYY-MM-DD"));
 		data.append("place",formData.place);
 		data.append("spendingInfo",formData.spendingInfo);
 		data.append("expenseCategory",formData.expenseCategory);
@@ -173,20 +117,16 @@ const EntryForm = () => {
 		data.append("moneyLentTo",formData.moneyLentTo);
 	
 		console.log('Form submitted:',formData);
-		const Sheet_Url="https://script.google.com/macros/s/AKfycbxFgWCFPz7eSOi-4Rrh5oafsb0dXK3zdNePVUQp0g8VIPmfhM7MPMgifGkkV1KqE8cW/exec"
+		const Sheet_Url="https://script.google.com/macros/s/AKfycby-G9BSN2tSJw0nTvxBy9-NFHtAtCmRHQUdy4Uigc2JqOdh4tQ4Bt2UCRZBEASLUx5F/exec"
     try {
       const response=await fetch(Sheet_Url, {
         method: 'POST',
         body: data,
-        muteHttpExceptions: true,
-		contentType: "application/json",
-		mode:"no-cors"
       });
-	  if (response !== ""){
-		console.log(response)
-		
+	  if(response.status===200){
+		setOpen(true);
 		console.log('Success:');
-	  } 
+	  }; 
       setFormData({
 		date:dayjs(),
 		place:"",
@@ -200,14 +140,14 @@ const EntryForm = () => {
     } catch (error) {
       console.log(error);
     }
-	  };
+};
 	
 	return (
 		<div className='expenses-page-container'>
 			<div className='app-bar-container'>
 				<AppBar position="static">
-					<Typography variant="h6" component="div" sx={{ textAlign: 'left', flexGrow: 1 }}>
-						Expenses Form
+					<Typography variant="h6" component="div" className="app-bar-header">
+						Expenses Entry Form
 					</Typography>
 				</AppBar>
 			</div>
@@ -215,7 +155,7 @@ const EntryForm = () => {
 				<form onSubmit={handleSubmit}>
 				<TextField disabled  label="Currency" defaultValue={"€"} fullWidth>  </TextField>
 				<br/>
-				<TextField variant="standard" label="Amount" name="amount"value={parseInt(formData.amount)} 
+				<TextField variant="standard" label="Amount" name="amount"value={parseInt(formData.amount??"")} 
 				placeholder="Amount" type="number"  onChange={handleChange}
 				required
 				fullWidth
@@ -237,24 +177,63 @@ const EntryForm = () => {
 				</LocalizationProvider>
 				<TextField variant="standard" label="Place" required fullWidth
 				error={placeError} helperText={placeError?"Please enter location":""} 
-				 onChange={handleChange}name="place"value={formData.place}></TextField>
-				<TextField select variant="standard" label="Expense Spent At Store" required
-				error={spendingInfoError}helperText={spendingInfoError?"Please select store where expense is spent":""} fullWidth onChange={handleChange} 
-				name="spendingInfo"value={formData.spendingInfo}>
-					{expenseSpentAtStore.map((category) => (
-						<MenuItem key={category.value} value={category.value} onChange={handleChange}>
-							{category.value}
-						</MenuItem>))}
-				</TextField>
-				<TextField select variant="standard" label="Expense Category" error={expenseCategoryError}helperText={expenseCategoryError?"Please select your expense category":""} fullWidth onChange={handleChange}
-				name="expenseCategory"value={formData.expenseCategory} required>
-					{expenseCategory.map((category) => (
-						<MenuItem key={category.value} value={category.value} onChange={handleChange}>
-							{category.value}
-						</MenuItem>))}
-				</TextField>
+				 onChange={handleChange}name="place"value={formData.place??""}></TextField>
+				
+				<Autocomplete
+  					disablePortal
+  					options={options}
+					noOptionsText="Enter to create a new option"
+					getOptionLabel={(options) => options.value}
+					value={options.find((option) => option.value === formData.spendingInfo) || null}
+					name="spendingInfo"
+					onInputChange={handleChange}
+  					renderInput={(params) => 
+					<TextField {...params} name="spendingInfo" label="Expense Spent At Store"
+					 variant="standard" required 
+					 fullWidth onChange={handleChange} 
+					 value={formData.spendingInfo??""}
+					 onKeyDown={(e) => {
+						if (
+						  e.key === "Enter" &&
+						  options.findIndex((o) => o.value === formData.spendingInfo) === -1
+						) {
+						  setOptions((o) => [...o,{ value: formData.spendingInfo }]);
+						  setFormData({ ...formData, [e.target.name]: e.target.value });
+						}
+					  }}
+					 />}
+				/>
+				<Autocomplete
+  					disablePortal
+  					options={category}
+					noOptionsText="Enter to create a new option"
+					getOptionLabel={(options) => options.value}
+					value={category.find((option) => option.value === formData.expenseCategory) || null}
+					name="expenseCategory"
+					onInputChange={handleChange}
+  					renderInput={(params) => 
+				<TextField {...params}  variant="standard" label="Expense Category" 
+				error={expenseCategoryError}
+				helperText={expenseCategoryError?"Please select your expense category":""} 
+				fullWidth 
+				onChange={handleChange}
+				value={formData.expenseCategory??""}
+				name="expenseCategory"
+				 required
+				 onKeyDown={(e) => {
+					if (
+					  e.key === "Enter" &&
+					  category.findIndex((o) => o.value === formData.expenseCategory) === -1
+					) {
+					  setCategory((o) => [...o,{ value: formData.expenseCategory }]);
+					  setFormData({ ...formData, [e.target.name]: e.target.value });
+					}
+				  }}
+				 />}
+					/>
+				
 				<TextField select variant="standard" label="Paid By" required error={amountPaidByError}helperText={amountPaidByError?"Amount Paid By":""} fullWidth onChange={handleChange}
-				name="amountPaidBy" value={formData.fullName}>
+				name="amountPaidBy" value={formData.amountPaidBy??""}>
 					{users.map((option) => (
 						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
 							{option.value}
@@ -262,7 +241,7 @@ const EntryForm = () => {
 					))}
 				</TextField>
 				<TextField select variant="standard" label="Money Borrowed From" helperText="Money Borrowed From" fullWidth  onChange={handleChange}
-				name="moneyBorrowedFrom" value={formData.moneyBorrowedFrom} >
+				name="moneyBorrowedFrom" value={formData.moneyBorrowedFrom??""} >
 					{users.map((option) => (
 						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
 							{option.value}
@@ -270,16 +249,20 @@ const EntryForm = () => {
 					))}  
 					</TextField>
 				<TextField select  variant="standard" label="Money Given To" helperText="Money Given To" fullWidth  onChange={handleChange}
-				name="moneyLentTo" value={formData.moneyLentTo}>
+				name="moneyLentTo" value={formData.moneyLentTo??""}>
 					{users.map((option) => (
 						<MenuItem key={option.value} value={option.value} onChange={handleChange}>
 							{option.value}
 						</MenuItem>
 					))}  
 					</TextField>
-					<button type="submit">Submit</button>
+					<div className='submit-button-container'>
+					<Button className="submit-button"type="submit" variant="contained" endIcon={<SendIcon />}>Submit</Button>
+					
+					</div>
 					</form>
 			</div>
+			<DisplayMessage/>
 		</div>
 
 	)

@@ -3,9 +3,21 @@
 }
 .app-bar-container{
     margin: 10px 10px auto;
+   
+}
+div.app-bar-header{
+    text-align: center;
 }
 .entry-form-container{
-   margin: 10px 10px auto;
+   margin: 15px 10px auto;
    font-size: 14px;
    font-style: arial;
+}
+.submit-button{
+    width:100px;
+  
+}
+.submit-button-container{
+    display: flex;
+    justify-content: flex-end;
 }

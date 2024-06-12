@@ -3,20 +3,16 @@ import {  Typography  } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import "./expenses-chart.css";
 import axios from "axios";
-
-
-const data = [
-  { id: 0, value: 10, label: 'series A' },
-  { id: 1, value: 15, label: 'series B' },
-  { id: 2, value: 20, label: 'series C' },
-];
-
+import { BarChart } from '@mui/x-charts/BarChart';
 export default function PieActiveArc() {
   const [csvData, setCsvData] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const [chartDataDate, setChartDataDate] = useState([]);
   const [chartLegends, setChartLegends] = useState([]);
+  const[barChartData,setBarChartData]=useState([]);
+  const[latestExpenseDate,setLatestExpenseDate]=useState();
   const[result,setResult]=useState([])
-  console.log(csvData,chartData);
+   console.log(barChartData); 
   useEffect(()=>{
     fetchCSVData();
   },[]);
@@ -25,22 +21,41 @@ export default function PieActiveArc() {
       ({
         id:index+1,
         value:parseInt(i['amount']),
-        label:i.expenseCategory
+        label:i.expenseCategory,
+        paidBy:i.amountPaidBy,
+        date:i.date
       }));
       setChartData(csvprops);
   },[csvData]);
   useEffect(()=>{
     const labels=[...new Set(chartData?.map(c=>c.label))]
     setChartLegends(labels);
+    setChartDataDate(chartData.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)));
   },[chartData]);
+  useEffect(()=>{
+    if(chartDataDate.length){
+ // Step 1: Identify the latest date
+ const latestDate = chartDataDate.reduce((max, item) => {
+  return new Date(item.date) > new Date(max) ? item.date : max;
+}, chartDataDate[0].date);
+setLatestExpenseDate(latestDate)
+// Step 2: Filter the objects with the latest date
+const latestDateObjects = chartDataDate.filter(item => item.date === latestDate);
+setBarChartData(latestDateObjects);
+// Step 3: Calculate the sum of `value` properties
+const sumOfValues = latestDateObjects.reduce((sum, item) => sum + item.value, 0);
+
+    }
+   
+  },[chartDataDate]);
   useEffect(()=>{
     const f=chartLegends?.map((i)=>sumCategoryValues(i));
 setResult(f);
   },[chartLegends]);
   const sumCategoryValues = (category)=>{
-    console.log(category,result)
+    //console.log(category,result)
     const filterByCategory=chartData?.filter((x)=>x.label===category);
-    console.log(filterByCategory)
+    //console.log(filterByCategory)
     const result1=filterByCategory?.reduce(
     (accumulator, {value}) => accumulator + value,
     0,
@@ -76,11 +91,11 @@ setResult(f);
   return data;
 }
 return (
-  <><Typography>Expenses in Euro By Category</Typography>
+  <><Typography>Expenses on {latestExpenseDate} By Category</Typography>
   <div className='expenses-chart-container'>
-
+{/* 
     {chartData?.length > 0 && <PieChart
-      colors={['violet', 'indigo', 'blue', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'black']}
+      colors={chartLegends.map((i)=>(['violet', 'indigo', 'blue', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'black']))}
       series={[
         {
           data: result,
@@ -89,7 +104,15 @@ return (
         },
       ]}
       height={300}
-      width={1000} />}
+      width={1000} />} */}
+      {/*Bar chart*/}
+      <BarChart
+  xAxis={[{ scaleType: 'band', data: barChartData?.map((i)=>i.label) }]}
+  series={[{ data: barChartData?.map((i)=>i.value) }]}
+  width={500}
+  height={300}
+  barLabel="value"
+/>
   </div>
   </>
   );
